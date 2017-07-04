@@ -12,7 +12,7 @@ import GameplayKit
 class GameScene: SKScene
 {
     //Game Camera
-    let cameraNode = SKCameraNode()
+    var cameraNode : SKCameraNode!
     
     // Constants
     let margin = CGFloat(30)
@@ -86,7 +86,8 @@ class GameScene: SKScene
         sceneSprites[spriteName!] = soldier
         
         
-        //        addCameraNode(nodeToAttach: soldier.spriteNode)
+        //Add camera to scene centered on soldier
+        addCameraNode(nodeToAttach: (soldier.component(ofType: SpriteComponent.self)?.node.self)!)
         
         
     }
@@ -109,12 +110,21 @@ class GameScene: SKScene
     
     func addCameraNode(nodeToAttach: SKSpriteNode)
     {
-        let cameraNode = SKCameraNode()
-        //cameraNode.position = nodeToAttach.position
-        cameraNode.position = CGPoint(x: size.width/2, y: size.height/2)
-        //cameraNode.setScale(1.0)
-        cameraNode.zPosition = 100
+        //Initialise and assign an instance of SKCameraNode
+        cameraNode = SKCameraNode()
+        
+        //Set the camera's zoom scale
+        cameraNode.setScale(0.50)
+        
+        //Set the scene's camera to reference cameraNode
+        self.camera = cameraNode
+        
+        //Make the cameraNode a childElement of the scene itself
         self.addChild(cameraNode)
+        
+        //Position the camera on the gamescene
+        cameraNode.position = CGPoint(x: size.width/2, y: size.height/2)
+
     }
     
     func touchDown(atPoint pos : CGPoint)
@@ -159,6 +169,11 @@ class GameScene: SKScene
             
         }
         
+        //Position the camera
+        let firstTouch = touches.first
+        let location = (firstTouch?.location(in: self))!
+        cameraNode.position = location
+        
         print ("finished touches began")
         
     }
@@ -166,6 +181,7 @@ class GameScene: SKScene
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?)
     {
         for t in touches { self.touchMoved(toPoint: t.location(in: self)) }
+        
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?)
@@ -180,23 +196,18 @@ class GameScene: SKScene
     
     override func didSimulatePhysics()
     {
-        
+        /*
         //To find the correct position, subtract half of th scene size from the
         //player's position, adjusted fro any world scaling.
         //Multiply by -1 and you have the adjustment to keep our sprite centered
-        //        let worldXPos = (soldier.spriteNode.position.x * self.xScale - (self.size.width/2))
-        //      let worldYPos = (soldier.spriteNode.position.y * self.yScale - (self.size.height/2))
+        let worldXPos = (soldier.component(ofType: SpriteComponent.self)?.node.self)!.spriteNode.position.x * self.xScale - (self.size.width/2))
+        let worldYPos = (soldier.spriteNode.position.y * self.yScale - (self.size.height/2))
         
-        let worldXPos = size.width/2
-        let worldYPos = size.height/2
-        
-        
-        //      print ("didSimulatePhysics 1")
-        
-        //Move the camera so that the player is centered in the scene
-        //        self.position = CGPoint(x: worldXPos, y: worldYPos)
-        
-        //        print ("didSimulatePhysics 2")
+        let worldXPos = (size.width/2) - self.xScale
+        let worldYPos = (size.height/2) - self.yScale
+        self.position = CGPoint(x: worldXPos, y: worldYPos)
+        //print ("didSimulatePhysics 2")
+        */
     }
     
     override func update(_ currentTime: TimeInterval)
