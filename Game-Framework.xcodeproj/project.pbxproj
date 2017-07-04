@@ -32,6 +32,8 @@
 		A82521C51F0BBA020086BFA4 /* Soldier.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82521B61F0BBA020086BFA4 /* Soldier.swift */; };
 		A82521C61F0BBA020086BFA4 /* SpriteComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82521B71F0BBA020086BFA4 /* SpriteComponent.swift */; };
 		A82521CD1F0BBE4A0086BFA4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A82521CC1F0BBE4A0086BFA4 /* Assets.xcassets */; };
+		A84308311F0BCABE006564F7 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = A843082F1F0BCABE006564F7 /* LICENSE */; };
+		A84308321F0BCABE006564F7 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = A84308301F0BCABE006564F7 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -74,6 +76,8 @@
 		A82521B61F0BBA020086BFA4 /* Soldier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Soldier.swift; sourceTree = "<group>"; };
 		A82521B71F0BBA020086BFA4 /* SpriteComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpriteComponent.swift; sourceTree = "<group>"; };
 		A82521CC1F0BBE4A0086BFA4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A843082F1F0BCABE006564F7 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		A84308301F0BCABE006564F7 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +101,8 @@
 		A825216F1F0BB8720086BFA4 = {
 			isa = PBXGroup;
 			children = (
+				A843082F1F0BCABE006564F7 /* LICENSE */,
+				A84308301F0BCABE006564F7 /* README.md */,
 				A825217A1F0BB8720086BFA4 /* Game-Framework */,
 				A82521951F0BB8730086BFA4 /* Game-FrameworkTests */,
 				A82521791F0BB8720086BFA4 /* Products */,
@@ -282,6 +288,7 @@
 				A82521BE1F0BBA020086BFA4 /* Soldier_Attack3.atlas in Resources */,
 				A82521CD1F0BBE4A0086BFA4 /* Assets.xcassets in Resources */,
 				A82521BF1F0BBA020086BFA4 /* Soldier_Attack4.atlas in Resources */,
+				A84308311F0BCABE006564F7 /* LICENSE in Resources */,
 				A82521C11F0BBA020086BFA4 /* Soldier_Idle.atlas in Resources */,
 				A82521C01F0BBA020086BFA4 /* Soldier_Hurt.atlas in Resources */,
 				A82521C31F0BBA020086BFA4 /* Soldier_Run.atlas in Resources */,
@@ -314,6 +321,7 @@
 				A825217C1F0BB8720086BFA4 /* AppDelegate.swift in Sources */,
 				A82521BA1F0BBA020086BFA4 /* MoveComponent.swift in Sources */,
 				A82521A71F0BB94A0086BFA4 /* ParallaxBackground.swift in Sources */,
+				A84308321F0BCABE006564F7 /* README.md in Sources */,
 				A82521A61F0BB94A0086BFA4 /* Ground.swift in Sources */,
 				A82521C51F0BBA020086BFA4 /* Soldier.swift in Sources */,
 				A82521B81F0BBA020086BFA4 /* Constants.swift in Sources */,
