@@ -54,7 +54,8 @@ class Soldier : GKEntity
         
         //Create the SpriteComponent and add it to the Entity
         let texture = soldierIdleAtlas!.textureNamed("3_terrorist_3_Idle_000.png")
-        let spriteComponent = SpriteComponent(entity: self, name: name, texture: texture, size: texture.size())
+        let spriteComponent = SpriteComponent(entity: self, name: name, texture: texture, size: CGSize(width: 25.0, height: 25.0))
+ //       let spriteComponent = SpriteComponent(entity: self, name: name, texture: texture, size: texture.size())
         spriteComponent.node.name = "soldier\(entityManager.soldierCount)"
         
         //NEED TO SET THE POSITION OF THE SPRITECOMPONENT = position
