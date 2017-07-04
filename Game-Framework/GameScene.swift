@@ -2,109 +2,211 @@
 //  GameScene.swift
 //  Game-Framework
 //
-//  Created by cadet on 04/07/2017.
+//  Created by cadet on 26/06/2017.
 //  Copyright © 2017 cadet. All rights reserved.
 //
 
 import SpriteKit
 import GameplayKit
 
-class GameScene: SKScene {
+class GameScene: SKScene
+{
+    //Game Camera
+    let cameraNode = SKCameraNode()
     
-    var entities = [GKEntity]()
-    var graphs = [String : GKGraph]()
+    // Constants
+    let margin = CGFloat(30)
     
-    private var lastUpdateTime : TimeInterval = 0
-    private var label : SKLabelNode?
-    private var spinnyNode : SKShapeNode?
+    let initialPlayerPosition = CGPoint(x:150, y: 250)
+    var playerProgress = CGFloat()
     
-    override func sceneDidLoad() {
-
-        self.lastUpdateTime = 0
+    //ParallaxBackgrounds and Parallex Views
+    var ParallaxBackgrounds:[ParallaxBackground] = []
+    
+    // Entity-component system
+    var entityManager: EntityManager!
+    
+    
+    var sceneSprites: [String:GKEntity] = [:]
+    //var sceneSprites : Dictionary<String, GKEntity>?
+    //var sceneSprites : Dictionary<String, GKEntity>?
+    
+    
+    // Update time
+    private var lastUpdateTimeInterval : TimeInterval = 0
+    
+    override func didMove(to view: SKView)
+    {
         
-        // Get label node from scene and store it for use later
-        self.label = self.childNode(withName: "//helloLabel") as? SKLabelNode
-        if let label = self.label {
-            label.alpha = 0.0
-            label.run(SKAction.fadeIn(withDuration: 2.0))
+        print("scene size: \(size)")
+        
+        
+        // Create entity manager
+        entityManager = EntityManager(scene: self)
+        
+        // Add Background
+        let Background = SKSpriteNode(imageNamed: "country-platform-back")
+        Background.position = CGPoint(x: size.width/2, y: size.height/2)
+        Background.xScale = 2
+        Background.yScale = 2
+        Background.zPosition = -20
+        Background.alpha = 0.9
+        self.addChild(Background)
+        
+        //createParallaxViews()
+        
+        // Create the entities
+        // Entities get add to the world inside EntityManager
+        
+        //Create the solder and display in game scene
+        let soldier = entityManager.spawnSoldier()
+        
+        
+        // Create a pointer to the GKEntity
+        
+        let spriteName = soldier.component(ofType: SpriteComponent.self)?.node.gameSpriteName
+        //let entityName = "Entity entityName"
+        
+        // declare a dictionary you can use the square brackets syntax([KeyType:ValueType])
+        //var sceneSprites : [String:String]
+        //        sceneSprites = Dictionary<spriteName: entityName>
+        //        sceneSprites?.updateValue(soldier, forKey: name)
+        
+        
+        // initialize a dictionary with a dictionary literal. A dictionary literal is a list of key-value pairs, separated by commas, surrounded by a pair of square brackets. A key-value pair is a combination of a key and a value separate by a colon(:).
+        /*        var sceneSprites : [String: String] =
+         [
+         "One" : "One",
+         "Two" : "Two"
+         ]
+         */
+        
+        // create empty dictionary using the empty dictionary literal ([:])
+        //var sceneSprites: [String:GKEntity] = [:]
+        sceneSprites[spriteName!] = soldier
+        
+        
+        //        addCameraNode(nodeToAttach: soldier.spriteNode)
+        
+        
+    }
+    
+    func createParallaxViews()
+    {
+        //Instantiate ParallaxBackgrounds to the ParallaxBackground array
+        //for i in 0...3
+        for _ in 0...3
+        {
+            ParallaxBackgrounds.append(ParallaxBackground())
         }
         
-        // Create shape node to use during mouse interaction
-        let w = (self.size.width + self.size.height) * 0.05
-        self.spinnyNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w), cornerRadius: w * 0.3)
+        //Spawn the new ParallaxBackgrounds
+        ParallaxBackgrounds[0].spawn(parentNode: self, imageName:"clouds1", zPosition: -5, alpha: 0.5, movementMultiplier: 0.75)
+        ParallaxBackgrounds[1].spawn(parentNode: self, imageName:"sun", zPosition: -15, alpha: 0.8, movementMultiplier: 0.50)
+        ParallaxBackgrounds[2].spawn(parentNode: self, imageName:"country-platform-forest", zPosition: -15, alpha: 0.4, movementMultiplier: 0.2)
+        //ParallaxBackgrounds[3].spawn(parentNode: world, imageName:"ParallaxBackground-4", zPosition: -20, movementMultiplier: 0.1)
+    }
+    
+    func addCameraNode(nodeToAttach: SKSpriteNode)
+    {
+        let cameraNode = SKCameraNode()
+        //cameraNode.position = nodeToAttach.position
+        cameraNode.position = CGPoint(x: size.width/2, y: size.height/2)
+        //cameraNode.setScale(1.0)
+        cameraNode.zPosition = 100
+        self.addChild(cameraNode)
+    }
+    
+    func touchDown(atPoint pos : CGPoint)
+    {
+    }
+    
+    func touchMoved(toPoint pos : CGPoint)
+    {
+    }
+    
+    func touchUp(atPoint pos : CGPoint)
+    {
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?)
+    {
+        print("touchesBegan started")
+        //for t in touches { self.touchDown(atPoint: t.location(in: self)) }
+        guard let touch = touches.first else
+        {
+            return
+        }
         
-        if let spinnyNode = self.spinnyNode {
-            spinnyNode.lineWidth = 2.5
+        //Find the location of the touch
+        let touchLocation = touch.location(in: self)
+        print("\(touchLocation)")
+        
+        //Locate the node at this location
+        let nodeTouched = nodes(at: touchLocation)
+        print (nodeTouched)
+        
+        if let gameSprite = nodeTouched.first as? GameSprite
+        {
+            for x in sceneSprites
+            {
+                // Unwrapping the optional using optional binding
+                if let entity = sceneSprites[gameSprite.gameSpriteName]
+                {
+                    entity.component(ofType: SpriteComponent.self)?.node.onTap()
+                }
+            }
             
-            spinnyNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat(M_PI), duration: 1)))
-            spinnyNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
-                                              SKAction.fadeOut(withDuration: 0.5),
-                                              SKAction.removeFromParent()]))
-        }
-    }
-    
-    
-    func touchDown(atPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.green
-            self.addChild(n)
-        }
-    }
-    
-    func touchMoved(toPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.blue
-            self.addChild(n)
-        }
-    }
-    
-    func touchUp(atPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.red
-            self.addChild(n)
-        }
-    }
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let label = self.label {
-            label.run(SKAction.init(named: "Pulse")!, withKey: "fadeInOut")
         }
         
-        for t in touches { self.touchDown(atPoint: t.location(in: self)) }
+        print ("finished touches began")
+        
     }
     
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?)
+    {
         for t in touches { self.touchMoved(toPoint: t.location(in: self)) }
     }
     
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?)
+    {
         for t in touches { self.touchUp(atPoint: t.location(in: self)) }
     }
     
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?)
+    {
         for t in touches { self.touchUp(atPoint: t.location(in: self)) }
     }
     
+    override func didSimulatePhysics()
+    {
+        
+        //To find the correct position, subtract half of th scene size from the
+        //player's position, adjusted fro any world scaling.
+        //Multiply by -1 and you have the adjustment to keep our sprite centered
+        //        let worldXPos = (soldier.spriteNode.position.x * self.xScale - (self.size.width/2))
+        //      let worldYPos = (soldier.spriteNode.position.y * self.yScale - (self.size.height/2))
+        
+        let worldXPos = size.width/2
+        let worldYPos = size.height/2
+        
+        
+        //      print ("didSimulatePhysics 1")
+        
+        //Move the camera so that the player is centered in the scene
+        //        self.position = CGPoint(x: worldXPos, y: worldYPos)
+        
+        //        print ("didSimulatePhysics 2")
+    }
     
-    override func update(_ currentTime: TimeInterval) {
+    override func update(_ currentTime: TimeInterval)
+    {
         // Called before each frame is rendered
         
-        // Initialize _lastUpdateTime if it has not already been
-        if (self.lastUpdateTime == 0) {
-            self.lastUpdateTime = currentTime
-        }
+        let deltaTime = currentTime - lastUpdateTimeInterval
+        lastUpdateTimeInterval = currentTime
         
-        // Calculate time since last update
-        let dt = currentTime - self.lastUpdateTime
         
-        // Update entities
-        for entity in self.entities {
-            entity.update(deltaTime: dt)
-        }
-        
-        self.lastUpdateTime = currentTime
+        entityManager.update(deltaTime)
     }
 }
